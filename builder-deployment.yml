@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: builder
+  labels:
+    name: builder
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: builder
+    spec:
+      containers:
+      - name: builder
+        command:
+          - /save_secrets.sh
+        image: gcr.io/insane-brain/builder:v0.1.6
+        ports:
+          - containerPort: 22
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-sock
+        env:
+          - name: CONTAINER_REGISTRY_SA
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: container_registry_sa
+          - name: DOCKER_API_VERSION
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: docker_api_version
+          - name: GKE_SA
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: gke_sa
+          - name: PROJECT_ID
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: project_id
+      volumes:
+        - name: docker-sock
+          hostPath:
+              path: /var/run/docker.sock

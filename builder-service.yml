@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: builder
+  name: builder
+spec:
+  type: LoadBalancer
+  ports:
+  - name: ssh
+    # nodePort: 30692
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  # - name: puma
+  #   nodePort: 32655
+  #   port: 3000
+  #   protocol: TCP
+  #   targetPort: 3000
+  selector:
+    name: builder
