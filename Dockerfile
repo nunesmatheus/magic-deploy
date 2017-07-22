@@ -4,7 +4,6 @@
 RUN apt-get update && apt-get install -y openssh-server git
 RUN mkdir /var/run/sshd
 # grab this password from docker --build-arg
-RUN echo 'root:jdkas21312doium23901m012u03' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
