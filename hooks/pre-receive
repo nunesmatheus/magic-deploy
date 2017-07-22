@@ -8,16 +8,15 @@ else
   git --work-tree=/deploy --git-dir=/app.git checkout -f master
 fi
 
-# STACK=heroku-16 /buildpack/bin/compile /deploy /tmp
-
-# git --work-tree=/deploy --git-dir=/app.git clean -df
 set -a
 . /set_env_vars.sh
 set +a
-docker build -f /deploy/application-dockerfile -t vestibulando /deploy
-tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c8`
+
+docker build -f /deploy/Dockerfile -t app /deploy
+tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
 APPLICATION_TAG=gcr.io/$PROJECT_ID/vestibulando:$tag_hash
 LATEST_TAG=gcr.io/$PROJECT_ID/vestibulando:latest
+
 docker tag vestibulando $APPLICATION_TAG
 docker tag vestibulando $LATEST_TAG
 docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
