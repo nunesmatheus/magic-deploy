@@ -1,4 +1,4 @@
-# FROM heroku/heroku:16-build
+FROM heroku/heroku:16-build
 # There is no need to be the Heroku image as it doesn't run the buildpakc anymore
 
 RUN apt-get update && apt-get install -y openssh-server git
