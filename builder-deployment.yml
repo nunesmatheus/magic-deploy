@@ -11,6 +11,7 @@ spec:
       labels:
         name: builder
     spec:
+      # TODO: Restrain resource usage
       containers:
       - name: builder
         command:
