@@ -16,7 +16,7 @@ spec:
       - name: builder
         command:
           - /save_secrets.sh
-        image: gcr.io/insane-brain/builder:v0.1.6
+        image: gcr.io/insane-brain/builder:latest
         ports:
           - containerPort: 22
         securityContext:
