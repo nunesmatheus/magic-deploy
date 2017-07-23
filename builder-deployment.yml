@@ -35,11 +35,6 @@ spec:
               secretKeyRef:
                 name: builder
                 key: docker_api_version
-          - name: GKE_SA
-            valueFrom:
-              secretKeyRef:
-                name: builder
-                key: gke_sa
           - name: PROJECT_ID
             valueFrom:
               secretKeyRef:
@@ -50,6 +45,16 @@ spec:
               secretKeyRef:
                 name: builder
                 key: application_name
+          - name: CLUSTER
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: cluster
+          - name: ZONE
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: zone
       volumes:
         - name: docker-sock
           hostPath:
