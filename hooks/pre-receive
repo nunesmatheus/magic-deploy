@@ -7,6 +7,7 @@ REPO=$PWD
 check_files_in () {
   rev=$1
 
+  # TODO: actually use a existing directory to get advantage of cache
   # create a temporary working directory
   workdir=$(mktemp -d gitXXXXXX)
   (
@@ -43,8 +44,7 @@ check_files_in () {
     docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
     docker push $APPLICATION_TAG
     docker push $LATEST_TAG
-    echo "$GKE_SA" > /keyconfig.json
-    /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /keyconfig.json --project $PROJECT_ID
+    /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /gke_sa.json --project $PROJECT_ID
     kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
   )
 }

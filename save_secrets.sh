@@ -7,7 +7,7 @@ printf "DOCKER_API_VERSION=$DOCKER_API_VERSION\n" >> /set_env_vars.sh
 # app name? deployment name etc
 # this should be a yml file in the future...
 printf "CONTAINER_REGISTRY_SA='$CONTAINER_REGISTRY_SA'\n" >> /set_env_vars.sh
-printf "GKE_SA='$GKE_SA'\n" >> /set_env_vars.sh
+echo $GKE_SA > /gke_sa.json
 chmod +x /set_env_vars.sh
 
 /usr/sbin/sshd -D
