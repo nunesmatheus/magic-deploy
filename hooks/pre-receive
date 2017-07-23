@@ -32,6 +32,7 @@ check_files_in () {
    . /set_env_vars.sh
    set +a
 
+   cp -r /buildpack .
    docker build -t $APPLICATION_NAME .
    tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
    APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$tag_hash
