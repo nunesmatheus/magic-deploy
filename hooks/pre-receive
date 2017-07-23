@@ -28,24 +28,24 @@ check_files_in () {
     # perform some sort of validation.  The exit code of this
     # command will be the exit code of this function, so
     # returning an error will reject the push.
-   set -a
-   . /set_env_vars.sh
-   set +a
+    set -a
+    . /set_env_vars.sh
+    set +a
 
-   cp -r /buildpack .
-   docker build -t $APPLICATION_NAME .
-   tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
-   APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$tag_hash
-   LATEST_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:latest
+    cp -r /buildpack .
+    docker build -t $APPLICATION_NAME .
+    tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
+    APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$tag_hash
+    LATEST_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:latest
 
-   docker tag $APPLICATION_NAME $APPLICATION_TAG
-   docker tag $APPLICATION_NAME $LATEST_TAG
-   docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
-   docker push $APPLICATION_TAG
-   docker push $LATEST_TAG
-   echo "$GKE_SA" > /keyconfig.json
-   /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /keyconfig.json --project $PROJECT_ID
-   kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
+    docker tag $APPLICATION_NAME $APPLICATION_TAG
+    docker tag $APPLICATION_NAME $LATEST_TAG
+    docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
+    docker push $APPLICATION_TAG
+    docker push $LATEST_TAG
+    echo "$GKE_SA" > /keyconfig.json
+    /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /keyconfig.json --project $PROJECT_ID
+    kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
   )
 }
 
