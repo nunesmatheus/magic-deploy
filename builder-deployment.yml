@@ -35,6 +35,11 @@ spec:
               secretKeyRef:
                 name: builder
                 key: docker_api_version
+          - name: GKE_SA
+            valueFrom:
+              secretKeyRef:
+                name: builder
+                key: gke_sa
           - name: PROJECT_ID
             valueFrom:
               secretKeyRef:

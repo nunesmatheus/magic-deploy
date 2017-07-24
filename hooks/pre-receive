@@ -44,6 +44,7 @@ check_files_in () {
     docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
     docker push $APPLICATION_TAG
     docker push $LATEST_TAG
+    /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /gke_sa.json --project $PROJECT_ID
     /google-cloud-sdk/bin/gcloud container clusters get-credentials $CLUSTER --zone $ZONE
     kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
   )
