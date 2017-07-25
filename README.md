@@ -17,9 +17,11 @@ From now on, all you need to do to rollout new versions is ```git push productio
 ## How it works
 The **builder** pod runs a [Git server](https://git-scm.com/book/en/v1/Git-on-the-Server) that will receive your push, build a Docker image with the pushed repository ./Dockerfile and push the image to the [Google Cloud Container Registry](https://cloud.google.com/container-registry), then proceed to run ```kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG```, consequently rolling a update for the application without downtime.
 
+Obs: $APPLICATION_TAG is compose by your $APPLICATION_NAME followed by a 10 character random string, so keep that in mind if you are used to tagging your images with versions.
+
 ## Upcoming features
 - Automagically rollout Heroku-like applications based on a Procfile
 - Package resources in a helm chart
 - Script to add SSH public key to pod
-- Support multiple applications deploy in one pod
+- Support multiple applications deploy with one builder pod
 - Shrink Dockerfile using lighter image
