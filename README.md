@@ -1,5 +1,5 @@
-# Magic deploy
-Flexy provides a simple way for self hosting a "git push deploy" solution on Kubernetes with the utmost flexibility and low cost on Google Cloud. Tweak a bit and use it anywhere.
+# Magic Deploy
+Magic Deploy provides a simple way for self hosting a "git push deploy" solution on Kubernetes with the utmost flexibility and low cost on Google Cloud. Tweak a bit and use it anywhere.
 
 ## Usage
 1. Create a kubernetes secret file with the keys listed in **./builder-deployment.yml**
