@@ -22,3 +22,4 @@ The **builder** pod runs a [Git server](https://git-scm.com/book/en/v1/Git-on-th
 - Package resources in a helm chart
 - Script to add SSH public key to pod
 - Support multiple applications deploy in one pod
+- Shrink Dockerfile using lighter image
