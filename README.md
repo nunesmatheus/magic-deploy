@@ -1,4 +1,4 @@
-# Flexy
+# Magic deploy
 Flexy provides a simple way for self hosting a "git push deploy" solution on Kubernetes with the utmost flexibility and low cost on Google Cloud. Tweak a bit and use it anywhere.
 
 ## Usage
