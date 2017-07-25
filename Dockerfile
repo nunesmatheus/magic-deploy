@@ -1,5 +1,4 @@
-FROM heroku/heroku:16-build
-# There is no need to be the Heroku image as it doesn't run the buildpakc anymore
+FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y openssh-server git
 RUN mkdir /var/run/sshd
