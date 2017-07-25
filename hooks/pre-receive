@@ -35,8 +35,8 @@ check_files_in () {
 
     cp -r /buildpack .
     docker build -t $APPLICATION_NAME .
-    tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
-    APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$tag_hash
+    TAG_HASH=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
+    APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$TAG_HASH
     LATEST_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:latest
 
     docker tag $APPLICATION_NAME $APPLICATION_TAG
