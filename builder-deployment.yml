@@ -45,11 +45,6 @@ spec:
               secretKeyRef:
                 name: builder
                 key: project_id
-          - name: APPLICATION_NAME
-            valueFrom:
-              secretKeyRef:
-                name: builder
-                key: application_name
           - name: CLUSTER
             valueFrom:
               secretKeyRef:
