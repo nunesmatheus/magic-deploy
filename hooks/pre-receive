@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo "puts ('a'..'z').to_a.shuffle[0,25].join" > file_name_generator.rb
 TMP_DIRECTORY=$(ruby file_name_generator.rb)
 mkdir /tmp/$TMP_DIRECTORY
@@ -6,16 +7,17 @@ mkdir /tmp/$TMP_DIRECTORY
 cd /tmp/$TMP_DIRECTORY
 
 set -a
-. /set_env_vars.sh
+. /tmp/$TMP_DIRECTORY/set_env_vars.sh
 set +a
 
-APPLICATION_DIR=/tmp/$APPLICATION_NAME
+APPLICATION_DIR=/apps/$APPLICATION_NAME
 
 cp -r /buildpack .
 docker build -t $APPLICATION_NAME --build-arg BUILD_DIR=$APPLICATION_DIR .
 HEAD=$(git --git-dir=/tmp/$TMP_DIRECTORY/.git --work-tree=/tmp/$TMP_DIRECTORY rev-parse HEAD)
 APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$HEAD
 LATEST_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:latest
+
 docker tag $APPLICATION_NAME $APPLICATION_TAG
 docker tag $APPLICATION_NAME $LATEST_TAG
 docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io

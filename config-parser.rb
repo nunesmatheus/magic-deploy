@@ -31,14 +31,13 @@ begin
     quit "ERROR: 'application' key on magic-deploy.yml not found!"
   end
 
-  current_config = File.read('/set_env_vars.sh')
-  # TODO: Should actually substitute the application name because of multi applications...
-  File.open('/set_env_vars.sh', 'a') do |f|
+  app_directory = "/apps/#{application}"
+  Dir.mkdir app_directory unless Dir.exists?(app_directory)
+
+  File.open("set_env_vars.sh", 'w') do |f|
+    f.puts File.read('/set_env_vars.sh')
     f.puts "APPLICATION_NAME=#{application}"
   end
-
-  application_temp_directory = "/tmp/#{application}"
-  Dir.mkdir application_temp_directory unless Dir.exists?(application_temp_directory)
 rescue Exception => e
   puts 'ERROR'
   quit e.message
