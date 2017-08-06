@@ -5,40 +5,41 @@ require 'fileutils'
 
 def quit(error=nil)
   puts error if error
-  Dir.chdir '/app.git'
-  FileUtils.rm_rf('/deploy')
   exit 1
 end
 
-begin
-  from, to, branch = ARGF.read.split " "
+def checkout(destination, ref)
+  `git clone /app.git #{destination}`
+  `git --work-tree=#{destination} --git-dir=#{destination}/.git checkout -f #{ref}`
+  Dir.chdir destination
+end
 
-  `git clone /app.git /deploy`
-  Dir.chdir '/deploy'
-  `git --work-tree=/deploy --git-dir=/deploy/.git checkout #{to}`
+begin
+  from, to, branch = STDIN.gets.chomp.split " "
+
+  checkout "/tmp/#{ARGV[0]}", to
 
   unless File.exists? 'magic-deploy.yml'
-    puts 'ERROR: magic-deploy.yml not found!' and quit
+    quit 'ERROR: magic-deploy.yml not found!'
   end
 
   app_config = YAML.load_file 'magic-deploy.yml'
-  unless app_config
-    puts "ERROR: magic-deploy.yml has no content!" and quit
-  end
+  quit "ERROR: magic-deploy.yml has no content!" unless app_config
 
   application = app_config['application']
-  unless application != nil
-    puts "ERROR: 'application' key on magic-deploy.yml not found!" and quit
+  if application == nil
+    quit "ERROR: 'application' key on magic-deploy.yml not found!"
   end
 
-  puts "Received application '#{application}'"
   current_config = File.read('/set_env_vars.sh')
-  return if current_config.include? 'APPLICATION_NAME'
-
+  # TODO: Should actually substitute the application name because of multi applications...
   File.open('/set_env_vars.sh', 'a') do |f|
     f.puts "APPLICATION_NAME=#{application}"
   end
+
+  application_temp_directory = "/tmp/#{application}"
+  Dir.mkdir application_temp_directory unless Dir.exists?(application_temp_directory)
 rescue Exception => e
-  quit(e.message)
+  puts 'ERROR'
+  quit e.message
 end
-~

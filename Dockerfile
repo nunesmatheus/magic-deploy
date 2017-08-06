@@ -40,7 +40,6 @@ RUN mv kubectl /usr/local/bin/kubectl
 
 ADD bin /buildpack/bin
 
-RUN mkdir /deploy
 RUN mkdir ~/.ssh
 
 ADD config-parser.rb /config-parser.rb
