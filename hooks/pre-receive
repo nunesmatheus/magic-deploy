@@ -26,6 +26,7 @@ docker push $LATEST_TAG
 /google-cloud-sdk/bin/gcloud container clusters get-credentials $CLUSTER --zone $ZONE
 eval $BEFORE_DEPLOY_COMMAND
 eval $DEPLOY_COMMAND
+eval $AFTER_DEPLOY_COMMAND
 
 cd /app.git
 rm -r /tmp/$TMP_DIRECTORY

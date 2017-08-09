@@ -45,6 +45,13 @@ begin
     deploy_command = 'kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG'
   end
 
+  after_deploy_command = app_config['after_deploy_command']
+  if after_deploy_command.is_a?(Array) && after_deploy_command.any?
+    after_deploy_command = after_deploy_command.join ' && '
+  else
+    after_deploy_command = ''
+  end
+
   app_directory = "/apps/#{application}"
   Dir.mkdir app_directory unless Dir.exists?(app_directory)
 
@@ -53,6 +60,7 @@ begin
     f.puts "APPLICATION_NAME=#{application}"
     f.puts "BEFORE_DEPLOY_COMMAND='#{before_deploy_command}'"
     f.puts "DEPLOY_COMMAND='#{deploy_command}'"
+    f.puts "AFTER_DEPLOY_COMMAND='#{after_deploy_command}'"
   end
 rescue Exception => e
   quit "ERROR #{e.message}"
