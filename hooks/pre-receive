@@ -12,7 +12,6 @@ set +a
 
 APPLICATION_DIR=/apps/$APPLICATION_NAME
 
-cp -r /buildpack .
 docker build -t $APPLICATION_NAME --build-arg BUILD_DIR=$APPLICATION_DIR .
 HEAD=$(git --git-dir=/tmp/$TMP_DIRECTORY/.git --work-tree=/tmp/$TMP_DIRECTORY rev-parse HEAD)
 APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$HEAD
@@ -25,7 +24,8 @@ docker push $APPLICATION_TAG
 docker push $LATEST_TAG
 /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /gke_sa.json --project $PROJECT_ID
 /google-cloud-sdk/bin/gcloud container clusters get-credentials $CLUSTER --zone $ZONE
-kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
+$BEFORE_DEPLOY_COMMAND
+$DEPLOY_COMMAND
 
 cd /app.git
 rm -r /tmp/$TMP_DIRECTORY
