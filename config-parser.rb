@@ -51,8 +51,8 @@ begin
   File.open("set_env_vars.sh", 'w') do |f|
     f.puts File.read('/set_env_vars.sh')
     f.puts "APPLICATION_NAME=#{application}"
-    f.puts "BEFORE_DEPLOY_COMMAND=#{before_deploy_command}"
-    f.puts "DEPLOY_COMMAND=#{deploy_command}"
+    f.puts "BEFORE_DEPLOY_COMMAND='#{before_deploy_command}'"
+    f.puts "DEPLOY_COMMAND='#{deploy_command}'"
   end
 rescue Exception => e
   quit "ERROR #{e.message}"

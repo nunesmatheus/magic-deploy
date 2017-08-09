@@ -24,8 +24,8 @@ docker push $APPLICATION_TAG
 docker push $LATEST_TAG
 /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /gke_sa.json --project $PROJECT_ID
 /google-cloud-sdk/bin/gcloud container clusters get-credentials $CLUSTER --zone $ZONE
-$BEFORE_DEPLOY_COMMAND
-$DEPLOY_COMMAND
+eval $BEFORE_DEPLOY_COMMAND
+eval $DEPLOY_COMMAND
 
 cd /app.git
 rm -r /tmp/$TMP_DIRECTORY
