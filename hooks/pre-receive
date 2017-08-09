@@ -1,55 +1,31 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
+echo "puts ('a'..'z').to_a.shuffle[0,25].join" > file_name_generator.rb
+TMP_DIRECTORY=$(ruby file_name_generator.rb)
+mkdir /tmp/$TMP_DIRECTORY
+/config-parser.rb $TMP_DIRECTORY
+cd /tmp/$TMP_DIRECTORY
 
-REPO=$PWD
+set -a
+. /tmp/$TMP_DIRECTORY/set_env_vars.sh
+set +a
 
-check_files_in () {
-  rev=$1
+APPLICATION_DIR=/apps/$APPLICATION_NAME
 
-  # TODO: actually use a existing directory to get advantage of cache
-  # create a temporary working directory
-  workdir=$(mktemp -d gitXXXXXX)
-  (
-    # arrange to clean up the workding directory
-    # when the subshell exits
-    trap "cd /; rm -rf $workdir" EXIT
+cp -r /buildpack .
+docker build -t $APPLICATION_NAME --build-arg BUILD_DIR=$APPLICATION_DIR .
+HEAD=$(git --git-dir=/tmp/$TMP_DIRECTORY/.git --work-tree=/tmp/$TMP_DIRECTORY rev-parse HEAD)
+APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$HEAD
+LATEST_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:latest
 
-    # unset GIT_DIR because it would confuse things
-    unset GIT_DIR
+docker tag $APPLICATION_NAME $APPLICATION_TAG
+docker tag $APPLICATION_NAME $LATEST_TAG
+docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
+docker push $APPLICATION_TAG
+docker push $LATEST_TAG
+/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /gke_sa.json --project $PROJECT_ID
+/google-cloud-sdk/bin/gcloud container clusters get-credentials $CLUSTER --zone $ZONE
+kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
 
-    # clone the repository
-    cd $workdir
-    git clone $REPO check
-
-    # checkout the specific revision we're checking
-    cd check
-    git checkout $rev
-
-    # perform some sort of validation.  The exit code of this
-    # command will be the exit code of this function, so
-    # returning an error will reject the push.
-    set -a
-    . /set_env_vars.sh
-    set +a
-
-    cp -r /buildpack .
-    docker build -t $APPLICATION_NAME .
-    tag_hash=`< /dev/urandom tr -dc a-z-0-9 | head -c10`
-    APPLICATION_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:$tag_hash
-    LATEST_TAG=gcr.io/$PROJECT_ID/$APPLICATION_NAME:latest
-
-    docker tag $APPLICATION_NAME $APPLICATION_TAG
-    docker tag $APPLICATION_NAME $LATEST_TAG
-    docker login -u _json_key -p "$CONTAINER_REGISTRY_SA" https://gcr.io
-    docker push $APPLICATION_TAG
-    docker push $LATEST_TAG
-    /google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /gke_sa.json --project $PROJECT_ID
-    /google-cloud-sdk/bin/gcloud container clusters get-credentials $CLUSTER --zone $ZONE
-    kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG
-  )
-}
-
-while read oldrev newrev refname; do
-  check_files_in $newrev || exit 1
-done
+cd /app.git
+rm -r /tmp/$TMP_DIRECTORY

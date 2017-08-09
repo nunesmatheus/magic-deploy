@@ -40,9 +40,10 @@ RUN mv kubectl /usr/local/bin/kubectl
 
 ADD bin /buildpack/bin
 
-RUN mkdir /deploy
 RUN mkdir ~/.ssh
+RUN mkdir /apps
 
+ADD config-parser.rb /config-parser.rb
 ADD save_secrets.sh /save_secrets.sh
 
 # Should actually init a repositoy, as there is no need to begin from a existing one. It makes the image way more generic
