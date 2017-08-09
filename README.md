@@ -25,6 +25,7 @@ Obs: $APPLICATION_TAG is **gcr.io/$PROJECT_ID/$APPLICATION_NAME:** followed by a
 - Script to add SSH public key to pod
 - ~Support multiple applications deploy with one builder pod~
 - Shrink Dockerfile using lighter image
+- Support custom before and after deploy commands, as well as the actual deploy command
 
 ## Upcoming general improvements
 - Halt hook execution upon any failure
