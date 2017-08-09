@@ -23,5 +23,8 @@ Obs: $APPLICATION_TAG is **gcr.io/$PROJECT_ID/$APPLICATION_NAME:** followed by a
 - Automagically rollout Heroku-like applications based on a Procfile
 - Package resources in a helm chart
 - Script to add SSH public key to pod
-- Support multiple applications deploy with one builder pod
+- ~Support multiple applications deploy with one builder pod~
 - Shrink Dockerfile using lighter image
+
+## Upcoming general improvements
+- Halt hook execution upon any failure
