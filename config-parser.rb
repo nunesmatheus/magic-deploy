@@ -14,6 +14,11 @@ def checkout(destination, ref)
   Dir.chdir destination
 end
 
+def extract_command(command)
+  return '' unless command.is_a?(Array) && command.any?
+  command.join ' && '
+end
+
 begin
   from, to, branch = STDIN.gets.chomp.split " "
 
@@ -31,26 +36,10 @@ begin
     quit "'application' key on magic-deploy.yml not found!"
   end
 
-  before_deploy_command = app_config['before_deploy_command']
-  if before_deploy_command.is_a?(Array) && before_deploy_command.any?
-    before_deploy_command = before_deploy_command.join ' && '
-  else
-    before_deploy_command = ''
-  end
 
-  deploy_command = app_config['deploy_command']
-  if deploy_command.is_a?(Array) && deploy_command.any?
-    deploy_command = deploy_command.join ' && '
-  else
-    deploy_command = 'kubectl set image deployment $APPLICATION_NAME $APPLICATION_NAME=$APPLICATION_TAG'
-  end
-
-  after_deploy_command = app_config['after_deploy_command']
-  if after_deploy_command.is_a?(Array) && after_deploy_command.any?
-    after_deploy_command = after_deploy_command.join ' && '
-  else
-    after_deploy_command = ''
-  end
+  before_deploy_command = extract_command(app_config['before_deploy_command'])
+  deploy_command = extract_command(app_config['deploy_command'])
+  after_deploy_command = extract_command(app_config['after_deploy_command'])
 
   app_directory = "/apps/#{application}"
   Dir.mkdir app_directory unless Dir.exists?(app_directory)
